@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FacturadorAPI.Models;
+using NuGet.Protocol.Core.Types;
+using FacturadorDomain.Repositories;
+using FacturadorDomain.Entities;
 
 namespace FacturadorAPI.Controllers
 {
@@ -13,95 +15,57 @@ namespace FacturadorAPI.Controllers
     [ApiController]
     public class FacturaCabecerasController : ControllerBase
     {
-        private readonly FacturadorDbContext _context;
+        private readonly IFacturaCabeceraRepository _repository;
 
-        public FacturaCabecerasController(FacturadorDbContext context)
+        public FacturaCabecerasController(IFacturaCabeceraRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
-        // GET: api/FacturaCabeceras
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FacturaCabecera>>> GetFacturaCabeceras()
         {
-            return await _context.FacturaCabeceras.ToListAsync();
+            return Ok(await _repository.GetAllAsync());
         }
 
-        // GET: api/FacturaCabeceras/5
         [HttpGet("{id}")]
         public async Task<ActionResult<FacturaCabecera>> GetFacturaCabecera(int id)
         {
-            var facturaCabecera = await _context.FacturaCabeceras.FindAsync(id);
+            var facturaCabecera = await _repository.GetByIdAsync(id);
 
             if (facturaCabecera == null)
             {
                 return NotFound();
             }
 
-            return facturaCabecera;
+            return Ok(facturaCabecera);
         }
 
-        // PUT: api/FacturaCabeceras/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFacturaCabecera(int id, FacturaCabecera facturaCabecera)
         {
-            if (id != facturaCabecera.FactId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(facturaCabecera).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FacturaCabeceraExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var updated = await _repository.UpdateAsync(id, facturaCabecera);
+            if (!updated)
+                return NotFound();
 
             return NoContent();
         }
 
-        // POST: api/FacturaCabeceras
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<FacturaCabecera>> PostFacturaCabecera(FacturaCabecera facturaCabecera)
         {
-            _context.FacturaCabeceras.Add(facturaCabecera);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetFacturaCabecera", new { id = facturaCabecera.FactId }, facturaCabecera);
+            var created = await _repository.AddAsync(facturaCabecera);
+            return CreatedAtAction(nameof(GetFacturaCabecera), new { id = created.Fact_ID }, created);
         }
 
-        // DELETE: api/FacturaCabeceras/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFacturaCabecera(int id)
         {
-            var facturaCabecera = await _context.FacturaCabeceras.FindAsync(id);
-            if (facturaCabecera == null)
-            {
+            var deleted = await _repository.DeleteAsync(id);
+            if (!deleted)
                 return NotFound();
-            }
-
-            _context.FacturaCabeceras.Remove(facturaCabecera);
-            await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool FacturaCabeceraExists(int id)
-        {
-            return _context.FacturaCabeceras.Any(e => e.FactId == id);
         }
     }
 }
