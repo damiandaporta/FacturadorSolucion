@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FacturadorAPI.Models;
+using FacturadorDomain.Repositories;
+using FacturadorDomain.Entities;
 
 namespace FacturadorAPI.Controllers
 {
@@ -13,95 +14,57 @@ namespace FacturadorAPI.Controllers
     [ApiController]
     public class ClientesController : ControllerBase
     {
-        private readonly FacturadorDbContext _context;
+        private readonly IClienteRepository _repository;
 
-        public ClientesController(FacturadorDbContext context)
+        public ClientesController(IClienteRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
-        // GET: api/Clientes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
         {
-            return await _context.Clientes.ToListAsync();
+            return Ok(await _repository.GetAllAsync());
         }
 
-        // GET: api/Clientes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Cliente>> GetCliente(int id)
         {
-            var cliente = await _context.Clientes.FindAsync(id);
+            var cliente = await _repository.GetByIdAsync(id);
 
             if (cliente == null)
             {
                 return NotFound();
             }
 
-            return cliente;
+            return Ok(cliente);
         }
 
-        // PUT: api/Clientes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCliente(int id, Cliente cliente)
         {
-            if (id != cliente.CliId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(cliente).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ClienteExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var updated = await _repository.UpdateAsync(id, cliente);
+            if (!updated)
+                return NotFound();
 
             return NoContent();
         }
 
-        // POST: api/Clientes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Cliente>> PostCliente(Cliente cliente)
         {
-            _context.Clientes.Add(cliente);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCliente", new { id = cliente.CliId }, cliente);
+            var created = await _repository.AddAsync(cliente);
+            return CreatedAtAction(nameof(GetCliente), new { id = created.Cli_ID }, created);
         }
 
-        // DELETE: api/Clientes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCliente(int id)
         {
-            var cliente = await _context.Clientes.FindAsync(id);
-            if (cliente == null)
-            {
+            var deleted = await _repository.DeleteAsync(id);
+            if (!deleted)
                 return NotFound();
-            }
-
-            _context.Clientes.Remove(cliente);
-            await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool ClienteExists(int id)
-        {
-            return _context.Clientes.Any(e => e.CliId == id);
         }
     }
 }

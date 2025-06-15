@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FacturadorAPI.Models;
+using FacturadorDomain.Repositories;
+using FacturadorDomain.Entities;
 
 namespace FacturadorAPI.Controllers
 {
@@ -13,95 +14,57 @@ namespace FacturadorAPI.Controllers
     [ApiController]
     public class FacturaDetallesController : ControllerBase
     {
-        private readonly FacturadorDbContext _context;
+        private readonly IFacturaDetalleRepository _repository;
 
-        public FacturaDetallesController(FacturadorDbContext context)
+        public FacturaDetallesController(IFacturaDetalleRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
-        // GET: api/FacturaDetalles
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FacturaDetalle>>> GetFacturaDetalles()
         {
-            return await _context.FacturaDetalles.ToListAsync();
+            return Ok(await _repository.GetAllAsync());
         }
 
-        // GET: api/FacturaDetalles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<FacturaDetalle>> GetFacturaDetalle(int id)
         {
-            var facturaDetalle = await _context.FacturaDetalles.FindAsync(id);
+            var facturaDetalle = await _repository.GetByIdAsync(id);
 
             if (facturaDetalle == null)
             {
                 return NotFound();
             }
 
-            return facturaDetalle;
+            return Ok(facturaDetalle);
         }
 
-        // PUT: api/FacturaDetalles/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFacturaDetalle(int id, FacturaDetalle facturaDetalle)
         {
-            if (id != facturaDetalle.FactDtlId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(facturaDetalle).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FacturaDetalleExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var updated = await _repository.UpdateAsync(id, facturaDetalle);
+            if (!updated)
+                return NotFound();
 
             return NoContent();
         }
 
-        // POST: api/FacturaDetalles
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<FacturaDetalle>> PostFacturaDetalle(FacturaDetalle facturaDetalle)
         {
-            _context.FacturaDetalles.Add(facturaDetalle);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetFacturaDetalle", new { id = facturaDetalle.FactDtlId }, facturaDetalle);
+            var created = await _repository.AddAsync(facturaDetalle);
+            return CreatedAtAction(nameof(GetFacturaDetalle), new { id = created.Fact_Dtl_ID }, created);
         }
 
-        // DELETE: api/FacturaDetalles/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFacturaDetalle(int id)
         {
-            var facturaDetalle = await _context.FacturaDetalles.FindAsync(id);
-            if (facturaDetalle == null)
-            {
+            var deleted = await _repository.DeleteAsync(id);
+            if (!deleted)
                 return NotFound();
-            }
-
-            _context.FacturaDetalles.Remove(facturaDetalle);
-            await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool FacturaDetalleExists(int id)
-        {
-            return _context.FacturaDetalles.Any(e => e.FactDtlId == id);
         }
     }
 }
