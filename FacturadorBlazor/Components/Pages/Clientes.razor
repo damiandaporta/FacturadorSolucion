@@ -1,0 +1,52 @@
+﻿@page "/clientes"
+@inject ClienteService ClienteService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+
+<h3>Clientes</h3>
+
+<button class="btn btn-primary" @onclick='() => Nav.NavigateTo("/clientes/nuevo")'>Nuevo</button>
+
+@if (clientes == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Razon Social</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cliente in clientes)
+            {
+                <tr>
+                    <td>@cliente.RazonSocial</td>
+                    <td>
+                        <button class="btn btn-warning" @onclick='() => Nav.NavigateTo($"/clientes/editar/{cliente.Cli_ID}")'>Editar</button>
+                        <button class="btn btn-danger" @onclick="() => Eliminar(cliente.Cli_ID)">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    List<Cliente>? clientes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        clientes = await ClienteService.GetClientesAsync();
+    }
+
+    private async Task Eliminar(int id)
+    {
+        await ClienteService.EliminarClienteAsync(id);
+        clientes = await ClienteService.GetClientesAsync();
+    }
+}
+

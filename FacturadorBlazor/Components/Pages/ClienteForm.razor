@@ -1,0 +1,40 @@
+﻿@page "/clientes/nuevo"
+@page "/clientes/editar/{id:int}"
+@inject ClienteService ClienteService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+
+<h3>@(id == null ? "Nuevo Cliente" : "Editar Cliente")</h3>
+
+<EditForm Model="cliente" OnValidSubmit="Guardar">
+    <InputText class="form-control" @bind-Value="cliente.RazonSocial" placeholder="RazonSocial" />
+    <button class="btn btn-success" type="submit">Guardar</button>
+    <button class="btn btn-secondary" @onclick='() => Nav.NavigateTo("/clientes")'>Cancelar</button>
+</EditForm>
+
+@code {
+    [Parameter] public int? id { get; set; }
+
+    Cliente cliente = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id.HasValue)
+        {
+            var existente = await ClienteService.GetClienteByIdAsync(id.Value);
+            if (existente != null)
+                cliente = existente;
+        }
+    }
+
+    async Task Guardar()
+    {
+        if (id == null)
+            await ClienteService.CrearClienteAsync(cliente);
+        else
+            await ClienteService.ActualizarClienteAsync(cliente);
+
+        Nav.NavigateTo("/clientes");
+    }
+}
+
