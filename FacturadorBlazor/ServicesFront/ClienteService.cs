@@ -1,4 +1,5 @@
-﻿using FacturadorDomain.Entities;
+﻿using System.Net.Http;
+using FacturadorDomain.Entities;
 
 public class ClienteService
 {
@@ -21,7 +22,12 @@ public class ClienteService
 
     public async Task EliminarClienteAsync(int id)
     {
-        await _httpClient.DeleteAsync($"api/Clientes/{id}");
+        var response = await _httpClient.DeleteAsync($"api/clientes/{id}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception("No se pudo eliminar el cliente");
+        }
     }
 
     public async Task<Cliente?> GetClienteByIdAsync(int id)

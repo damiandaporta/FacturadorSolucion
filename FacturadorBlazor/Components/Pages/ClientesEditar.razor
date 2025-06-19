@@ -1,0 +1,58 @@
+﻿@page "/clientes/editar/{id:int}"
+@inject ClienteService ClienteService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+
+<h3>Editar Cliente</h3>
+
+@if (cliente == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <EditForm Model="@cliente" OnValidSubmit="ActualizarCliente" FormName="FormularioEditarCliente">
+
+        <div class="mb-3">
+            <label class="form-label">Razón Social</label>
+            <InputText class="form-control" @bind-Value="cliente.RazonSocial" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">CUIT</label>
+            <InputText class="form-control" @bind-Value="cliente.CUIT" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Dirección</label>
+            <InputText class="form-control" @bind-Value="cliente.Direccion" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Actualizar</button>
+        <a class="btn btn-secondary" href="/clientes">Volver</a>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    Cliente? cliente;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cliente = await ClienteService.GetClienteByIdAsync(id);
+    }
+
+    private async Task ActualizarCliente()
+    {
+        await ClienteService.ActualizarClienteAsync(cliente!);
+        Nav.NavigateTo("/clientes");
+    }
+
+    private void Volver()
+    {
+        Nav.NavigateTo("/clientes");
+    }
+}
+

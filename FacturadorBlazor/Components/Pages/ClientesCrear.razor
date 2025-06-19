@@ -1,0 +1,42 @@
+﻿@page "/clientes/crear"
+@inject ClienteService ClienteService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+
+<h3>Crear Cliente</h3>
+
+<EditForm Model="@nuevoCliente" OnValidSubmit="GuardarCliente" FormName="FormularioCrearCliente">
+
+    <div class="mb-3">
+        <label for="razonSocial" class="form-label">Razón Social</label>
+        <InputText id="razonSocial" class="form-control" @bind-Value="nuevoCliente.RazonSocial" />
+    </div>
+
+    <div class="mb-3">
+        <label for="cuit" class="form-label">CUIT</label>
+        <InputText id="cuit" class="form-control" @bind-Value="nuevoCliente.CUIT" />
+    </div>
+
+    <div class="mb-3">
+        <label for="direccion" class="form-label">Dirección</label>
+        <InputText id="direccion" class="form-control" @bind-Value="nuevoCliente.Direccion" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a class="btn btn-secondary" href="/clientes">Volver</a>
+</EditForm>
+
+@code {
+    Cliente nuevoCliente = new Cliente();
+
+    private async Task GuardarCliente()
+    {
+        await ClienteService.CrearClienteAsync(nuevoCliente);
+        Nav.NavigateTo("/clientes");
+    }
+
+    private void Volver()
+    {
+        Nav.NavigateTo("/clientes");
+    }
+}
