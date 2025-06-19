@@ -1,0 +1,58 @@
+﻿@page "/clientes/eliminar/{id:int}"
+@inject ClienteService ClienteService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+
+<h3>Eliminar Cliente</h3>
+
+@if (cliente == null)
+{
+    <p>Cargando...</p>
+}
+@if (cliente is not null)
+{
+    <div class="mb-3">
+        <p>¿Está seguro que quiere eliminar al cliente <strong>@cliente.RazonSocial</strong>?</p>
+    </div>
+
+    <button class="btn btn-danger me-2" @onclick="EliminarCliente">Sí</button>
+    <a class="btn btn-secondary" href="/clientes">No</a>
+}
+else
+{
+    <p>Cargando cliente...</p>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    Cliente? cliente;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cliente = await ClienteService.GetClienteByIdAsync(id);
+    }
+
+    private async Task EliminarCliente()
+    {
+        try
+        {
+            if (cliente is not null)
+            {
+                await ClienteService.EliminarClienteAsync(cliente.Cli_ID);
+                Nav.NavigateTo("/clientes");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al eliminar cliente: {ex.Message}");
+        }
+    }
+
+
+    private void Volver()
+    {
+        Nav.NavigateTo("/clientes");
+    }
+}

@@ -1,7 +1,9 @@
+using Blazored.Modal;
 using FacturadorBlazor.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddBlazoredModal();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -12,6 +14,12 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 
 builder.Services.AddScoped<ClienteService>();
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+    options.Secure = CookieSecurePolicy.Always;
+});
 
 var app = builder.Build();
 
