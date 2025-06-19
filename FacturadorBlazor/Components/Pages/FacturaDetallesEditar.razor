@@ -1,0 +1,68 @@
+﻿@page "/facturaDetalles/editar/{id:int}"
+@inject FacturaDetalleService FacturaDetalleService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+
+<h3>Editar Detalle de Factura</h3>
+
+@if (facturaDetalle == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <EditForm Model="@facturaDetalle" FormName="FormularioEditarfacturaDetalle">
+
+        <div class="mb-3">
+            <label for="Fact_Dtl_ID" class="form-label">ID del Detalle de la Factura</label>
+            <InputNumber id="Fact_Dtl_ID" class="form-control" @bind-Value="facturaDetalle.Fact_Dtl_ID" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Fact_ID" class="form-label">ID de la Factura</label>
+            <InputNumber id="Fact_ID" class="form-control" @bind-Value="facturaDetalle.Fact_ID" />
+        </div>
+
+        <div class="mb-3">
+            <label for="fechaAlta" class="form-label">Fecha de Alta</label>
+            <InputDate id="fechaAlta" class="form-control" @bind-Value="facturaDetalle.FechaAlta" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Art_ID" class="form-label">ID del Articulo</label>
+            <InputNumber id="Art_ID" class="form-control" @bind-Value="facturaDetalle.Fact_ID" />
+        </div>
+
+
+        <div class="mb-3">
+            <label for="Cantidad" class="form-label">Cantidad</label>
+            <InputNumber id="Cantidad" class="form-control" @bind-Value="facturaDetalle.Cantidad" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Precio" class="form-label">Precio</label>
+            <InputNumber id="Precio" class="form-control" @bind-Value="facturaDetalle.Precio" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Monto" class="form-label">Monto</label>
+            <InputNumber id="Monto" class="form-control" @bind-Value="facturaDetalle.Monto" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Actualizar</button>
+        <a class="btn btn-secondary" href="/facturaDetalles">Volver</a>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    FacturaDetalle? facturaDetalle;
+
+    protected override async Task OnInitializedAsync()
+    {
+        facturaDetalle = await FacturaDetalleService.GetFacturaDetalleByIdAsync(id);
+    }
+}
+

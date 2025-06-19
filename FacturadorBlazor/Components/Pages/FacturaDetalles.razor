@@ -1,0 +1,63 @@
+﻿@page "/facturaDetalles"
+@inject FacturaDetalleService FacturaDetalleService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+@using Blazored.Modal
+@using Blazored.Modal.Services
+@inject IModalService Modal
+
+<h3>Factura Detalle</h3>
+
+<a class="btn btn-primary" href="/facturaDetalles/crear">Nuevo</a>
+
+@if (facturaDetalles == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID del Detalle la Factura</th>
+                <th>ID de la Factura</th>
+                <th>Fecha de Alta</th>
+                <th>ID del Articulo</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Monto</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var facturaDetalle in facturaDetalles)
+            {
+                <tr>
+                    <td>@facturaDetalle.Fact_Dtl_ID</td>
+                    <td>@facturaDetalle.Fact_ID</td>
+                    <td>@facturaDetalle.FechaAlta</td>
+                    <td>@facturaDetalle.Art_ID</td>
+                    <td>@facturaDetalle.Cantidad</td>
+                    <td>@facturaDetalle.Precio</td>
+                    <td>@facturaDetalle.Monto</td>
+                    <td>
+                        <a class="btn btn-warning" href="/facturaDetalles/editar/@facturaDetalle.Fact_Dtl_ID">Editar</a>
+                        <a class="btn btn-danger" href="/facturaDetalles/eliminar/@facturaDetalle.Fact_Dtl_ID">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    int? articuloAEliminarId = null;
+    bool mostrarConfirmacion = false;
+
+    List<FacturaDetalle>? facturaDetalles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        facturaDetalles = await FacturaDetalleService.GetFacturaDetallesAsync();
+    }
+}

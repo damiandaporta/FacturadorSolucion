@@ -1,0 +1,52 @@
+﻿@page "/facturaDetalles/eliminar/{id:int}"
+@inject FacturaDetalleService FacturaDetalleService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+
+<h3>Eliminar Detalle de Factura</h3>
+
+@if (facturaDetalle == null)
+{
+    <p>Cargando...</p>
+}
+@if (facturaDetalle is not null)
+{
+    <div class="mb-3">
+        <p>¿Está seguro que quiere eliminar la Cabecera de Factura <strong>@facturaDetalle.Fact_Dtl_ID</strong>?</p>
+    </div>
+
+    <button class="btn btn-danger me-2" @onclick="EliminarfacturaDetalle">Sí</button>
+    <a class="btn btn-secondary" href="/facturaDetalles">No</a>
+}
+else
+{
+    <p>Cargando factura Detalle...</p>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    FacturaDetalle? facturaDetalle;
+
+    protected override async Task OnInitializedAsync()
+    {
+        facturaDetalle = await FacturaDetalleService.GetFacturaDetalleByIdAsync(id);
+    }
+
+    private async Task EliminarfacturaDetalle()
+    {
+        try
+        {
+            if (facturaDetalle is not null)
+            {
+                await FacturaDetalleService.EliminarFacturaDetalleAsync(facturaDetalle.Fact_Dtl_ID);
+                Nav.NavigateTo("/facturaDetalles");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al eliminar la Detalle de Factura: {ex.Message}");
+        }
+    }
+}

@@ -1,0 +1,59 @@
+﻿@page "/facturaDetalles/crear"
+@inject FacturaDetalleService FacturaDetalleService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+
+<h3>Crear Cabecera de Factura</h3>
+
+<EditForm Model="@nuevoFacturaDetalle" OnValidSubmit="GuardarfacturaDetalle" FormName="FormularioCrearfacturaDetalle">
+
+    <div class="mb-3">
+        <label for="Fact_Dtl_ID" class="form-label">ID del Detalle de la Factura</label>
+        <InputNumber id="Fact_Dtl_ID" class="form-control" @bind-Value="nuevoFacturaDetalle.Fact_Dtl_ID" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Fact_ID" class="form-label">ID de la Factura</label>
+        <InputNumber id="Fact_ID" class="form-control" @bind-Value="nuevoFacturaDetalle.Fact_ID" />
+    </div>
+
+    <div class="mb-3">
+        <label for="fechaAlta" class="form-label">Fecha de Alta</label>
+        <InputDate id="fechaAlta" class="form-control" @bind-Value="nuevoFacturaDetalle.FechaAlta" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Art_ID" class="form-label">ID del Articulo</label>
+        <InputNumber id="Art_ID" class="form-control" @bind-Value="nuevoFacturaDetalle.Fact_ID" />
+    </div>
+
+
+    <div class="mb-3">
+        <label for="Cantidad" class="form-label">Cantidad</label>
+        <InputNumber id="Cantidad" class="form-control" @bind-Value="nuevoFacturaDetalle.Cantidad" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Precio" class="form-label">Precio</label>
+        <InputNumber id="Precio" class="form-control" @bind-Value="nuevoFacturaDetalle.Precio" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Monto" class="form-label">Monto</label>
+        <InputNumber id="Monto" class="form-control" @bind-Value="nuevoFacturaDetalle.Monto" />
+    </div>
+
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a class="btn btn-secondary" href="/facturaDetalles">Volver</a>
+</EditForm>
+
+@code {
+    FacturaDetalle nuevoFacturaDetalle = new FacturaDetalle();
+
+    private async Task GuardarfacturaDetalle()
+    {
+        await FacturaDetalleService.CrearFacturaDetallesAsync(nuevoFacturaDetalle);
+        Nav.NavigateTo("/facturaDetalles");
+    }
+}
