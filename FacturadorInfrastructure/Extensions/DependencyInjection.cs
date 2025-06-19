@@ -18,7 +18,7 @@ namespace FacturadorInfrastructure
             services.AddScoped<IArticuloRepository, ArticuloRepository>();
             services.AddScoped<IFacturaCabeceraRepository, FacturaCabeceraRepository>();
             services.AddScoped<IFacturaDetalleRepository, FacturaDetalleRepository>();
-
+            services.AddScoped<IFacturaRepository, FacturaRepository>();
             return services;
         }
     }
