@@ -16,7 +16,7 @@ builder.Services.AddScoped(sp => new HttpClient
 builder.Services.AddScoped<ClienteService>();
 builder.Services.AddScoped<ArticuloService>();
 builder.Services.AddScoped<FacturaCabeceraService>();
-
+builder.Services.AddScoped<FacturaDetalleService>();
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
