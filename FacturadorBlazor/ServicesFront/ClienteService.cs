@@ -22,7 +22,7 @@ public class ClienteService
 
     public async Task EliminarClienteAsync(int id)
     {
-        var response = await _httpClient.DeleteAsync($"api/clientes/{id}");
+        var response = await _httpClient.DeleteAsync($"api/Clientes/{id}");
 
         if (!response.IsSuccessStatusCode)
         {

@@ -1,0 +1,52 @@
+﻿@page "/articulos/eliminar/{id:int}"
+@inject ArticuloService ClienteService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+
+<h3>Eliminar Articulo</h3>
+
+@if (articulo == null)
+{
+    <p>Cargando...</p>
+}
+@if (articulo is not null)
+{
+    <div class="mb-3">
+        <p>¿Está seguro que quiere eliminar al cliente <strong>@articulo.Descripcion</strong>?</p>
+    </div>
+
+    <button class="btn btn-danger me-2" @onclick="EliminarArticulo">Sí</button>
+    <a class="btn btn-secondary" href="/articulos">No</a>
+}
+else
+{
+    <p>Cargando articulo...</p>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    Articulo? articulo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        articulo = await ClienteService.GetArticuloByIdAsync(id);
+    }
+
+    private async Task EliminarArticulo()
+    {
+        try
+        {
+            if (articulo is not null)
+            {
+                await ClienteService.EliminarArticuloAsync(articulo.Art_ID);
+                Nav.NavigateTo("/articulos");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al eliminar articulo: {ex.Message}");
+        }
+    }
+}

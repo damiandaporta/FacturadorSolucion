@@ -1,0 +1,47 @@
+﻿@page "/articulos/editar/{id:int}"
+@inject ArticuloService ArticuloService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+
+<h3>Editar Articulo</h3>
+
+@if (articulo == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <EditForm Model="@articulo" OnValidSubmit="ActualizarArticulo" FormName="FormularioEditarArticulo">
+
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <InputText class="form-control" @bind-Value="articulo.Descripcion" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Precio</label>
+            <InputNumber class="form-control" @bind-Value="articulo.Precio" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Actualizar</button>
+        <a class="btn btn-secondary" href="/articulos">Volver</a>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    Articulo? articulo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        articulo = await ArticuloService.GetArticuloByIdAsync(id);
+    }
+
+    private async Task ActualizarArticulo()
+    {
+        await ArticuloService.ActualizarArticuloAsync(articulo!);
+        Nav.NavigateTo("/articulos");
+    }
+}
