@@ -21,6 +21,7 @@ else
             <tr>
                 <th>Descripcion</th>
                 <th>Precio</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -48,28 +49,5 @@ else
     protected override async Task OnInitializedAsync()
     {
         articulos = await ArticuloService.GetArticulosAsync();
-    }
-
-    private async Task Eliminar(int id)
-    {
-        await ArticuloService.EliminarArticuloAsync(id);
-        articulos = await ArticuloService.GetArticulosAsync();
-    }
-
-    private async Task EliminarConfirmado()
-    {
-        if (articuloAEliminarId.HasValue)
-        {
-            await ArticuloService.EliminarArticuloAsync(articuloAEliminarId.Value);
-            articulos = await ArticuloService.GetArticulosAsync();
-        }
-        mostrarConfirmacion = false;
-        articuloAEliminarId = null;
-    }
-
-    private void CancelarEliminacion()
-    {
-        mostrarConfirmacion = false;
-        articuloAEliminarId = null;
     }
 }
