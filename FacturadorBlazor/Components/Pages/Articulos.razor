@@ -1,0 +1,75 @@
+﻿@page "/articulos"
+@inject ArticuloService ArticuloService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+@using Blazored.Modal
+@using Blazored.Modal.Services
+@inject IModalService Modal
+
+<h3>Articulos</h3>
+
+<a class="btn btn-primary" href="/articulos/crear">Nuevo</a>
+
+@if (articulos == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Descripcion</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var articulo in articulos)
+            {
+                <tr>
+                    <td>@articulo.Descripcion</td>
+                    <td>@articulo.Precio</td>
+                    <td>
+                        <a class="btn btn-warning" href="/articulos/editar/@articulo.Art_ID">Editar</a>
+                        <a class="btn btn-danger" href="/articulos/eliminar/@articulo.Art_ID">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    int? articuloAEliminarId = null;
+    bool mostrarConfirmacion = false;
+
+    List<Articulo>? articulos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        articulos = await ArticuloService.GetArticulosAsync();
+    }
+
+    private async Task Eliminar(int id)
+    {
+        await ArticuloService.EliminarArticuloAsync(id);
+        articulos = await ArticuloService.GetArticulosAsync();
+    }
+
+    private async Task EliminarConfirmado()
+    {
+        if (articuloAEliminarId.HasValue)
+        {
+            await ArticuloService.EliminarArticuloAsync(articuloAEliminarId.Value);
+            articulos = await ArticuloService.GetArticulosAsync();
+        }
+        mostrarConfirmacion = false;
+        articuloAEliminarId = null;
+    }
+
+    private void CancelarEliminacion()
+    {
+        mostrarConfirmacion = false;
+        articuloAEliminarId = null;
+    }
+}

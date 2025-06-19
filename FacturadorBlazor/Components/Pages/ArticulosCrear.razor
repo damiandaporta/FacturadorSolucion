@@ -1,0 +1,33 @@
+﻿@page "/articulos/crear"
+@inject ArticuloService ArticuloService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+
+<h3>Crear Articulo</h3>
+
+<EditForm Model="@nuevoArticulo" OnValidSubmit="GuardarArticulo" FormName="FormularioCrearArticulo">
+
+    <div class="mb-3">
+        <label for="descripcion" class="form-label">Nombre</label>
+        <InputText id="descripcion" class="form-control" @bind-Value="nuevoArticulo.Descripcion" />
+    </div>
+
+    <div class="mb-3">
+        <label for="precio" class="form-label">Precio</label>
+        <InputNumber id="precio" class="form-control" @bind-Value="nuevoArticulo.Precio" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a class="btn btn-secondary" href="/articulos">Volver</a>
+</EditForm>
+
+@code {
+    Articulo nuevoArticulo = new Articulo();
+
+    private async Task GuardarArticulo()
+    {
+        await ArticuloService.CrearArticuloAsync(nuevoArticulo);
+        Nav.NavigateTo("/articulos");
+    }
+}
+
