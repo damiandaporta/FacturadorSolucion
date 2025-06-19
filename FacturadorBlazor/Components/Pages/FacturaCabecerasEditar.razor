@@ -1,0 +1,53 @@
+﻿@page "/facturaCabeceras/editar/{id:int}"
+@inject FacturaCabeceraService FacturaCabeceraService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+
+<h3>Editar Cabecera de Factura</h3>
+
+@if (facturaCabecera == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <EditForm Model="@facturaCabecera" FormName="FormularioEditarfacturaCabecera">
+        
+        <div class="mb-3">
+            <label for="FactID" class="form-label">ID de la Factura</label>
+            <InputNumber id="FactID" class="form-control" @bind-Value="facturaCabecera.Fact_ID" />
+        </div>
+
+        <div class="mb-3">
+            <label for="fechaAlta" class="form-label">Fecha de Alta</label>
+            <InputDate id="fechaAlta" class="form-control" @bind-Value="facturaCabecera.FechaAlta" />
+        </div>
+
+        <div class="mb-3">
+            <label for="CliID" class="form-label">ID del cliente</label>
+            <InputNumber id="CliID" class="form-control" @bind-Value="facturaCabecera.Cli_ID" />
+        </div>
+
+
+        <div class="mb-3">
+            <label for="estado" class="form-label">Estado</label>
+            <InputText id="estado" class="form-control" @bind-Value="facturaCabecera.Estado" />
+        </div>  
+
+        <button type="submit" class="btn btn-success">Actualizar</button>
+        <a class="btn btn-secondary" href="/facturaCabeceras">Volver</a>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    FacturaCabecera? facturaCabecera;
+
+    protected override async Task OnInitializedAsync()
+    {
+        facturaCabecera = await FacturaCabeceraService.GetFacturaCabeceraByIdAsync(id);
+    }
+}
+

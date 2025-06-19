@@ -1,0 +1,57 @@
+﻿@page "/facturaCabeceras"
+@inject FacturaCabeceraService ArticuloService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+@using Blazored.Modal
+@using Blazored.Modal.Services
+@inject IModalService Modal
+
+<h3>Factura Cabecera</h3>
+
+<a class="btn btn-primary" href="/facturaCabeceras/crear">Nuevo</a>
+
+@if (facturaCabeceras == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID de la Factura</th>
+                <th>Fecha de Alta</th>
+				<th>ID del Cliente</th>
+				<th>Estado</th>
+				<th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var FacturaCabecera in facturaCabeceras)
+            {
+                <tr>
+                    <td>@FacturaCabecera.Fact_ID</td>
+                    <td>@FacturaCabecera.FechaAlta</td>
+                    <td>@FacturaCabecera.Cli_ID</td>
+                    <td>@FacturaCabecera.Estado</td>
+                    <td>
+                        <a class="btn btn-warning" href="/facturaCabeceras/editar/@FacturaCabecera.Fact_ID">Editar</a>
+                        <a class="btn btn-danger" href="/facturaCabeceras/eliminar/@FacturaCabecera.Fact_ID">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    int? articuloAEliminarId = null;
+    bool mostrarConfirmacion = false;
+
+    List<FacturaCabecera>? facturaCabeceras;
+
+    protected override async Task OnInitializedAsync()
+    {
+        facturaCabeceras = await ArticuloService.GetFacturaCabecerasAsync();
+    }
+}

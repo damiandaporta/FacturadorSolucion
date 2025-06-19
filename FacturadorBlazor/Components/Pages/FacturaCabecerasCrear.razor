@@ -1,0 +1,43 @@
+﻿@page "/facturaCabeceras/crear"
+@inject FacturaCabeceraService FacturaCabeceraService
+@inject NavigationManager Nav
+@using FacturadorDomain.Entities
+
+<h3>Crear Cabecera de Factura</h3>
+
+<EditForm Model="@nuevoFacturaCabecera" OnValidSubmit="GuardarfacturaCabecera" FormName="FormularioCrearfacturaCabecera">
+
+    <div class="mb-3">
+        <label for="FactID" class="form-label">ID de la Factura</label>
+        <InputNumber id="FactID" class="form-control" @bind-Value="nuevoFacturaCabecera.Fact_ID" />
+    </div>
+
+    <div class="mb-3">
+        <label for="fechaAlta" class="form-label">Fecha de Alta</label>
+        <InputDate id="fechaAlta" class="form-control" @bind-Value="nuevoFacturaCabecera.FechaAlta" />
+    </div>
+
+    <div class="mb-3">
+        <label for="CliID" class="form-label">ID del cliente</label>
+        <InputNumber id="CliID" class="form-control" @bind-Value="nuevoFacturaCabecera.Cli_ID" />
+    </div>
+
+
+    <div class="mb-3">
+        <label for="estado" class="form-label">Estado</label>
+        <InputText id="estado" class="form-control" @bind-Value="nuevoFacturaCabecera.Estado" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a class="btn btn-secondary" href="/facturaCabeceras">Volver</a>
+</EditForm>
+
+@code {
+    FacturaCabecera nuevoFacturaCabecera = new FacturaCabecera();
+
+    private async Task GuardarfacturaCabecera()
+    {
+        await FacturaCabeceraService.CrearFacturaCabecerasAsync(nuevoFacturaCabecera);
+        Nav.NavigateTo("/facturaCabeceras");
+    }
+}
