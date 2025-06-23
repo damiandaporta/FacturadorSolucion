@@ -28,6 +28,16 @@ namespace FacturadorInfrastructure.Context
                 entity.HasNoKey();
                 entity.ToView("VW_FacturasConCliente");
             });
+
+            modelBuilder.Entity<FacturaConProductoMasVendidoDto>(e =>
+            {
+                e.HasNoKey();
+            });
+
+            modelBuilder.Entity<FacturaConDetalleDto>(e =>
+            {
+                e.HasNoKey();
+            });
         }
     }
 }
