@@ -1,0 +1,30 @@
+﻿@page "/clientes/pr1"
+<h3>Test Binding</h3>
+
+<EditForm Model="@clienteTest" OnValidSubmit="Guardar" FormName="test">
+    <DataAnnotationsValidator />
+
+    <InputText @bind-Value="clienteTest.RazonSocial" />
+    <p>Valor actual: @clienteTest.RazonSocial</p>
+
+    <button type="submit">Enviar</button>
+
+    <InputText @bind-Value="clienteTest.RazonSocial" class="form-control" />
+    <input @bind="clienteTest.RazonSocial" />
+    <p>Valor actual: @clienteTest.RazonSocial</p>
+</EditForm>
+
+@code {
+    private ClientePrueba clienteTest = new();
+
+    private void Guardar()
+    {
+        Console.WriteLine("Guardado: " + clienteTest.RazonSocial);
+    }
+
+    public class ClientePrueba
+    {
+        public string RazonSocial { get; set; } = string.Empty;
+    }
+}
+

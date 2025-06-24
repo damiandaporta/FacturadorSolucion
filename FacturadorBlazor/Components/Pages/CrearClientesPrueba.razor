@@ -1,0 +1,69 @@
+﻿@page "/clientes/crear2"
+@using FacturadorBlazor.Models
+@using FacturadorDomain.Entities
+@inject ClienteService ClienteService
+@inject NavigationManager Nav
+
+<h3>Crear Cliente</h3>
+
+<EditForm Model="nuevoCliente" OnValidSubmit="OnvalidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Razón Social</label>
+        <InputText class="form-control"
+                   @bind-Value="nuevoCliente.RazonSocial"
+                   @bind-Value:event="oninput" /> <!-- Cambiado para actualización en tiempo real -->
+        <ValidationMessage For="@(() => nuevoCliente.RazonSocial)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">CUIT</label>
+        <InputText class="form-control"
+                   @bind-Value="nuevoCliente.CUIT"
+                   @bind-Value:event="oninput" />
+        <ValidationMessage For="@(() => nuevoCliente.CUIT)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Dirección</label>
+        <InputText class="form-control"
+                   @bind-Value="nuevoCliente.Direccion"
+                   @bind-Value:event="oninput" />
+        <ValidationMessage For="@(() => nuevoCliente.Direccion)" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Guardar</button>
+</EditForm>
+
+@if (debugInfo != null)
+{
+    <div class="mt-3 alert alert-info">
+        <pre>@debugInfo</pre>
+    </div>
+}
+
+@code {
+    private Cliente nuevoCliente = new();
+    private string? debugInfo;
+
+    protected override void OnInitialized()
+    {
+        // Debug: Verificamos que el modelo se inicialice correctamente
+        //debugInfo = $"Modelo inicializado: {JsonSerializer.Serialize(nuevoCliente)}";
+    }
+
+    private async Task OnvalidSubmit()
+    {
+        try
+        {
+            await ClienteService.CrearClienteAsync(nuevoCliente);
+            Nav.NavigateTo("/clientes");
+        }
+        catch (Exception ex)
+        {
+            debugInfo = $"Error al guardar: {ex.Message}";
+        }
+    }
+}

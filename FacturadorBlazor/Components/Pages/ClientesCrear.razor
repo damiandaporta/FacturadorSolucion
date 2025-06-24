@@ -1,42 +1,38 @@
-﻿@page "/clientes/crear"
+﻿@page "/clientes/crearfdsfs"
 @inject ClienteService ClienteService
 @inject NavigationManager Nav
+@inject ILogger<ClientesCrear> Logger
 @using FacturadorDomain.Entities
 
 <h3>Crear Cliente</h3>
 
-<EditForm Model="@nuevoCliente" OnValidSubmit="GuardarCliente" FormName="FormularioCrearCliente">
-
+<EditForm Model="@nuevoCliente" OnValidSubmit="OnValidSubmit" FormName="formCrearCliente">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+   
     <div class="mb-3">
-        <label for="razonSocial" class="form-label">Razón Social</label>
-        <InputText id="razonSocial" class="form-control" @bind-Value="nuevoCliente.RazonSocial" />
+        <label class="form-label">Razón Social</label>
+        <InputText class="form-control" @bind-value="nuevoCliente.RazonSocial"></InputText>
+        <ValidationMessage For="@(() => nuevoCliente.RazonSocial)"></ValidationMessage>
     </div>
 
     <div class="mb-3">
-        <label for="cuit" class="form-label">CUIT</label>
-        <InputText id="cuit" class="form-control" @bind-Value="nuevoCliente.CUIT" />
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="/clientes" class="btn btn-secondary ms-2">Cancelar</a>
     </div>
 
-    <div class="mb-3">
-        <label for="direccion" class="form-label">Dirección</label>
-        <InputText id="direccion" class="form-control" @bind-Value="nuevoCliente.Direccion" />
-    </div>
-
-    <button type="submit" class="btn btn-success">Guardar</button>
-    <a class="btn btn-secondary" href="/clientes">Volver</a>
+    <p>Valor actual: @nuevoCliente?.RazonSocial</p>
 </EditForm>
 
 @code {
-    Cliente nuevoCliente = new Cliente();
+    private Cliente nuevoCliente = new();
+    private Cliente crearCliente = new();
+    private string? debugInfo;
 
-    private async Task GuardarCliente()
+    private async Task OnValidSubmit()
     {
+        crearCliente.RazonSocial = nuevoCliente.RazonSocial;
         await ClienteService.CrearClienteAsync(nuevoCliente);
         Nav.NavigateTo("/clientes");
-    }
 
-    private void Volver()
-    {
-        Nav.NavigateTo("/clientes");
     }
 }

@@ -54,7 +54,7 @@ namespace FacturadorAPI.Controllers
         public async Task<ActionResult<Cliente>> PostCliente(Cliente cliente)
         {
             var created = await _repository.AddAsync(cliente);
-            return CreatedAtAction(nameof(GetCliente), new { id = created.Cli_ID }, created);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
