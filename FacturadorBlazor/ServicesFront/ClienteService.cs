@@ -1,5 +1,6 @@
-﻿using System.Net.Http;
+﻿using Facturador.Contracts.Clientes;
 using FacturadorDomain.Entities;
+using System.Net.Http;
 
 public class ClienteService
 {
@@ -15,7 +16,7 @@ public class ClienteService
         return await _httpClient.GetFromJsonAsync<List<Cliente>>("api/Clientes");
     }
 
-    public async Task CrearClienteAsync(Cliente cliente)
+    public async Task CrearClienteAsync(ClienteCreateDto cliente)
     {
         await _httpClient.PostAsJsonAsync("api/Clientes", cliente);
     }
@@ -30,12 +31,12 @@ public class ClienteService
         }
     }
 
-    public async Task<Cliente?> GetClienteByIdAsync(int id)
+    public async Task<ClienteUpdateDto?> GetClienteByIdAsync(int id)
     {
-        return await _httpClient.GetFromJsonAsync<Cliente>($"api/Clientes/{id}");
+        return await _httpClient.GetFromJsonAsync<ClienteUpdateDto>($"api/Clientes/{id}");
     }
 
-    public async Task ActualizarClienteAsync(Cliente cliente)
+    public async Task ActualizarClienteAsync(ClienteUpdateDto cliente)
     {
         await _httpClient.PutAsJsonAsync($"api/Clientes/{cliente.Cli_ID}", cliente);
     }
