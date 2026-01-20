@@ -1,7 +1,10 @@
 ﻿@page "/clientes/editar/{id:int}"
+@rendermode InteractiveServer
+
 @inject ClienteService ClienteService
 @inject NavigationManager Nav
-@using FacturadorDomain.Entities
+@using Facturador.Contracts.Clientes
+@using Microsoft.AspNetCore.Components.Forms
 
 <h3>Editar Cliente</h3>
 
@@ -11,21 +14,28 @@
 }
 else
 {
-    <EditForm Model="@cliente" OnValidSubmit="ActualizarCliente" FormName="FormularioEditarCliente">
+    <EditForm Model="@cliente"
+              OnValidSubmit="ActualizarCliente"
+              FormName="EditarClienteForm">
+
+        <DataAnnotationsValidator />
 
         <div class="mb-3">
             <label class="form-label">Razón Social</label>
-            <InputText class="form-control" @bind-Value="cliente.RazonSocial" />
+            <InputText class="form-control"
+                       @bind-Value="cliente.RazonSocial" />
         </div>
 
         <div class="mb-3">
             <label class="form-label">CUIT</label>
-            <InputText class="form-control" @bind-Value="cliente.CUIT" />
+            <InputText class="form-control"
+                       @bind-Value="cliente.CUIT" />
         </div>
 
         <div class="mb-3">
             <label class="form-label">Dirección</label>
-            <InputText class="form-control" @bind-Value="cliente.Direccion" />
+            <InputText class="form-control"
+                       @bind-Value="cliente.Direccion" />
         </div>
 
         <button type="submit" class="btn btn-success">Actualizar</button>
@@ -34,10 +44,11 @@ else
 }
 
 @code {
+
     [Parameter]
     public int id { get; set; }
 
-    Cliente? cliente;
+    ClienteUpdateDto? cliente;
 
     protected override async Task OnInitializedAsync()
     {
@@ -49,10 +60,4 @@ else
         await ClienteService.ActualizarClienteAsync(cliente!);
         Nav.NavigateTo("/clientes");
     }
-
-    private void Volver()
-    {
-        Nav.NavigateTo("/clientes");
-    }
 }
-

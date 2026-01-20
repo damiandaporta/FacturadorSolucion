@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Facturador.Contracts\Facturador.Contracts.csproj" />
     <ProjectReference Include="..\FacturadorDomain\FacturadorDomain.csproj" />
     <ProjectReference Include="..\FacturadorInfrastructure\FacturadorInfrastructure.csproj" />
   </ItemGroup>
