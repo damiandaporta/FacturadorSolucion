@@ -1,7 +1,9 @@
 ﻿@page "/clientes/eliminar/{id:int}"
+@rendermode InteractiveServer
 @inject ClienteService ClienteService
 @inject NavigationManager Nav
 @using FacturadorDomain.Entities
+@using Facturador.Contracts.Clientes
 
 <h3>Eliminar Cliente</h3>
 
@@ -27,11 +29,11 @@ else
     [Parameter]
     public int id { get; set; }
 
-    Cliente? cliente;
+    ClienteUpdateDto? cliente;
 
     protected override async Task OnInitializedAsync()
     {
-       // cliente = await ClienteService.GetClienteByIdAsync(id);
+       cliente = await ClienteService.GetClienteByIdAsync(id);
     }
 
     private async Task EliminarCliente()
