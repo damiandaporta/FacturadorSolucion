@@ -1,12 +1,15 @@
 ﻿@page "/articulos/crear"
+@rendermode InteractiveServer
 @inject ArticuloService ArticuloService
 @inject NavigationManager Nav
 @using FacturadorDomain.Entities
+@using Facturador.Contracts.Articulos
 
 <h3>Crear Articulo</h3>
 
-<EditForm Model="@nuevoArticulo" OnValidSubmit="GuardarArticulo" FormName="FormularioCrearArticulo">
+<EditForm Model="@nuevoArticulo" OnValidSubmit="GuardarArticulo" FormName="FormularioCrearArticulo" Enhance="false">
 
+    <DataAnnotationsValidator />
     <div class="mb-3">
         <label for="descripcion" class="form-label">Nombre</label>
         <InputText id="descripcion" class="form-control" @bind-Value="nuevoArticulo.Descripcion" />
@@ -22,7 +25,13 @@
 </EditForm>
 
 @code {
-    Articulo nuevoArticulo = new Articulo();
+    ArticuloCreateDto nuevoArticulo = new();
+    EditContext editContext;
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(nuevoArticulo);
+    }
 
     private async Task GuardarArticulo()
     {
@@ -30,4 +39,3 @@
         Nav.NavigateTo("/articulos");
     }
 }
-
