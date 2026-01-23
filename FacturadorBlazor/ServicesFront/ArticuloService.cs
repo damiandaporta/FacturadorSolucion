@@ -1,4 +1,5 @@
-﻿using FacturadorDomain.Entities;
+﻿using Facturador.Contracts.Articulos;
+using FacturadorDomain.Entities;
 
     public class ArticuloService
     {
@@ -14,7 +15,7 @@
             return await _httpClient.GetFromJsonAsync<List<Articulo>>("api/Articulos");
         }
 
-        public async Task CrearArticuloAsync(Articulo articulo)
+        public async Task CrearArticuloAsync(ArticuloCreateDto articulo)
         {
             await _httpClient.PostAsJsonAsync("api/Articulos", articulo);
         }
